@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import ApplicationURL from '../helpera/ApplicatinURL';
+import ApplicationURL from '../helpers/ApplicatinURL';
 
 export default class demoblazePage {
     constructor(protected page: Page) {
