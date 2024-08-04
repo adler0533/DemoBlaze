@@ -1,26 +1,10 @@
-// demoblazePage.ts
 import { Page } from '@playwright/test';
+import ApplicationURL from '../helpera/ApplicatinURL';
 
-export class DemoblazePage {
-    readonly page: Page;
-    readonly phonesLink = 'a.list-group-item:has-text("Phones")';
-    readonly productCard = '.card-title';
-
-    constructor(page: Page) {
-        this.page = page;
+export default class demoblazePage {
+    constructor(protected page: Page) {
     }
 
-    async navigate() {
-        await this.page.goto('https://www.demoblaze.com');
-    }
-
-    async clickPhonesLink() {
-        await this.page.click(this.phonesLink);
-    }
-
-    async getProductTitles() {
-        return this.page.$$eval(this.productCard, cards => 
-            cards.map(card => card.textContent ? card.textContent.trim() : '')
-        );
-    }
-}
+    public async loginToDemo(url = ApplicationURL.BASE_URL) {
+        await this.page.goto(url);
+    }}
