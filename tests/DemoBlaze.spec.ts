@@ -14,7 +14,7 @@ test("testing filter buttons", async ({ page }) => {
   /**
    * Check sorting for Phones category.
    */
-  await homePage.checkSortButton(homePage.phoneLocator, itemsInStore.PHONESE);
+  await homePage.checkSortButton(homePage.phoneLocator, itemsInStore.PHONES);
 
   /**
    * Check sorting for Laptops category.

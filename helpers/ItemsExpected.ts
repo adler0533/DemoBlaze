@@ -4,7 +4,7 @@
  */
 export default class itemsInStore {
   // An array of phone names available in the store.
-  public static readonly PHONESE = [
+  public static readonly PHONES = [
     "Samsung galaxy s6",
     "Nokia lumia 1520",
     "Nexus 6",
