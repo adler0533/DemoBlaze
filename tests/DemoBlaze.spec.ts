@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import demoblazePage from "../pages/DemoBlazePage";
 import itemsInStore from "../helpers/ItemsExpected";
+import cartPage from "../pages/cartPage";
+import Utils from "../helpers/Utils";
 
 /**
  * Test suite for DemoBlaze filter buttons.
@@ -9,7 +11,7 @@ test("testing filter buttons", async ({ page }) => {
   const homePage = new demoblazePage(page);
   await homePage.loginToDemo();
 
-  await page.waitForTimeout(2000);
+  await page.waitForLoadState("load");
 
   /**
    * Check sorting for Phones category.
@@ -39,6 +41,8 @@ test("testing the buttons", async ({ page }) => {
 
   await page.waitForTimeout(2000);
 
+  await homePage.navigateToCart();
+
   // Navigate to Home page.
   await homePage.navigateToHome();
 
@@ -63,9 +67,13 @@ test("testing the buttons", async ({ page }) => {
  */
 test("testing cart page", async ({ page }) => {
   const homePage = new demoblazePage(page);
+  const cart = new cartPage(page);
+  const utils = new Utils(page);
   await homePage.loginToDemo();
-  await page.waitForTimeout(2000);
+  await utils.waitForPageLoad();
 
   //   Add a product to the cart and verify the dialog.
-  await homePage.addProduct();
+  await homePage.addProduct("Samsung galaxy s7");
+
+  await cart.placeOrderAndVerify(page);
 });

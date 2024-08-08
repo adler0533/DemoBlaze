@@ -1,5 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
-import ApplicationURL from "../helpers/ApplicatinURL";
+import ApplicationURL from "../helpers/ApplicationURL";
 
 /**
  * demoblazePage - Class to interact with the DemoBlaze application.
@@ -14,7 +14,6 @@ export default class demoblazePage {
   private cartButton: Locator;
   private loginButton: Locator;
   private signupButton: Locator;
-  private goToProductPage: Locator;
   static sortPhone: Locator;
 
   /**
@@ -31,9 +30,6 @@ export default class demoblazePage {
     this.aboutUsButton = page.getByRole("link", { name: "About us" });
     this.loginButton = page.getByRole("link", { name: "Log in" });
     this.signupButton = page.getByRole("link", { name: "Sign up" });
-    this.goToProductPage = page.getByRole("link", {
-      name: "Samsung galaxy s6",
-    });
   }
 
   /**
@@ -173,11 +169,12 @@ export default class demoblazePage {
   /**
    * Adds a product to the cart and verifies the dialog.
    */
-  public async addProduct() {
-    await this.goToProductPage.click();
+  public async addProduct(productName: string) {
+    const productPageLink = this.page.getByRole("link", { name: productName });
+    await productPageLink.click();
     await this.page.waitForLoadState("networkidle");
     await expect(this.page).toHaveURL(
-      ApplicationURL.BASE_URL + "prod.html?idp_=1"
+      ApplicationURL.BASE_URL + `prod.html?idp_=4`
     );
 
     const dialogPromise = this.page.waitForEvent("dialog");
@@ -187,7 +184,11 @@ export default class demoblazePage {
     const dialog = await dialogPromise;
     expect(dialog.message()).toBe("Product added");
     await dialog.accept();
-  }
+    await this.page.locator("#cartur").click();
+    await this.page.waitForLoadState("networkidle");
+    await expect(this.page).toHaveURL(ApplicationURL.CART_URL);
 
-  public async cartPage() {}
+    const cartItemLocator = this.page.locator(`text=${productName}`);
+    await expect(cartItemLocator).toBeVisible();
+  }
 }
