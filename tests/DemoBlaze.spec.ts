@@ -1,79 +1,62 @@
-import { test, expect } from "@playwright/test";
-import demoblazePage from "../pages/DemoBlazePage";
+import { test, expect, Page } from "@playwright/test";
+import DemoBlazePage from "../pages/DemoBlazePage";
 import itemsInStore from "../helpers/ItemsExpected";
-import cartPage from "../pages/cartPage";
+import CartPage from "../pages/cartPage";
 import Utils from "../helpers/Utils";
 
-/**
- * Test suite for DemoBlaze filter buttons.
- */
-test("testing filter buttons", async ({ page }) => {
-  const homePage = new demoblazePage(page);
-  await homePage.loginToDemo();
+test.describe("DemoBlaze Test Suite", () => {
+  let homePage: DemoBlazePage;
+  let cart: CartPage;
+  let utils: Utils;
 
-  await page.waitForLoadState("load");
+  test.beforeEach(async ({ page }) => {
+    homePage = new DemoBlazePage(page);
+    cart = new CartPage(page);
+    utils = new Utils(page);
+    
+    await homePage.loginToDemo();
+    await page.waitForLoadState("load");
+  });
 
-  /**
-   * Check sorting for Phones category.
-   */
-  await homePage.checkSortButton(homePage.phoneLocator, itemsInStore.PHONES);
+  test("testing filter buttons", async () => {
+    // Check sorting for Phones category.
+    await homePage.checkSortButton(homePage.phoneLocator, itemsInStore.PHONES);
 
-  /**
-   * Check sorting for Laptops category.
-   */
-  await homePage.checkSortButton(homePage.laptopLocator, itemsInStore.LAPTOP);
+    // Check sorting for Laptops category.
+    await homePage.checkSortButton(homePage.laptopLocator, itemsInStore.LAPTOP);
 
-  /**
-   * Check sorting for Monitors category.
-   */
-  await homePage.checkSortButton(
-    homePage.monitorLocator,
-    itemsInStore.MONITORS
-  );
-});
+    // Check sorting for Monitors category.
+    await homePage.checkSortButton(homePage.monitorLocator, itemsInStore.MONITORS);
+  });
 
-/**
- * Test suite for DemoBlaze navigation and pop-up buttons.
- */
-test("testing the buttons", async ({ page }) => {
-  const homePage = new demoblazePage(page);
-  await homePage.loginToDemo();
+  test("testing the buttons", async () => {
+    await homePage.navigateToCart();
 
-  await page.waitForTimeout(2000);
+    // Navigate to Home page.
+    await homePage.navigateToHome();
 
-  await homePage.navigateToCart();
+    // Navigate to Contact page and close the contact modal.
+    await homePage.navigateToContact();
 
-  // Navigate to Home page.
-  await homePage.navigateToHome();
+    // Open and close the About Us pop-up.
+    await homePage.aboutUsPopUp();
 
-  // Navigate to Contact page and close the contact modal.
-  await homePage.navigateToContact();
+    // Open and close the Login pop-up.
+    await homePage.loginPopUp();
 
-  //   Open and close the About Us pop-up.
-  await homePage.aboutUsPopUp();
+    // Open and close the Signup pop-up.
+    await homePage.signupPopUp();
 
-  // Open and close the Login pop-up.
-  await homePage.loginPopUp();
+    // Send a message through the Contact form and verify the dialog.
+    await homePage.sendMessage();
+  });
 
-  // Open and close the Signup pop-up.
-  await homePage.signupPopUp();
+  test("testing cart page", async () => {
+    await utils.waitForPageLoad();
 
-  // Send a message through the Contact form and verify the dialog.
-  await homePage.sendMessage();
-});
+    // Add a product to the cart and verify the dialog.
+    await homePage.addProduct("Samsung galaxy s7");
 
-/**
- * Test suite for DemoBlaze cart page.
- */
-test("testing cart page", async ({ page }) => {
-  const homePage = new demoblazePage(page);
-  const cart = new cartPage(page);
-  const utils = new Utils(page);
-  await homePage.loginToDemo();
-  await utils.waitForPageLoad();
-
-  //   Add a product to the cart and verify the dialog.
-  await homePage.addProduct("Samsung galaxy s7");
-
-  await cart.placeOrderAndVerify(page);
+    await cart.placeOrderAndVerify();
+  });
 });

@@ -19,14 +19,6 @@ export default class CartPage {
   }
 
   /**
-   * Navigates to the DemoBlaze Cart page.
-   * @param {string} [url=ApplicationURL.CART_URL] - The URL to navigate to. Defaults to the CART_URL.
-   */
-  public async loginToCart(url = ApplicationURL.CART_URL) {
-    await this.page.goto(url);
-  }
-
-  /**
    * Places an order on the cart page and verifies the confirmation details.
    *
    * 1. Clicks the "Place Order" button.
@@ -35,9 +27,8 @@ export default class CartPage {
    * 4. Submits the form by clicking the "Purchase" button.
    * 5. Verifies that the confirmation alert contains the correct details.
    *
-   * @param {Page} page - The Playwright Page object.
    */
-  public async placeOrderAndVerify(page: Page) {
+  public async placeOrderAndVerify() {
     // Click the "Place Order" button
     await this.orderButton.click();
 
